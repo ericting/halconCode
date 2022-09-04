@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image,'data/board') </l>
+<l>rgb1_to_gray(Image, GrayImage)</l>
+<l>gen_rectangle1 (Rectangle, 259, 87, 957, 909)</l>
+<l>reduce_domain (GrayImage, Rectangle, ImageReduced)</l>
+<l>threshold(ImageReduced,Light,85,255)</l>
+<l>gen_circle(StructElement,6,6,7)</l>
+<c>*清理显示窗口，以便显示结果</c>
+<l>dev_clear_window ()</l>
+<c>*进行顶帽运算，得到了开运算中移除的局部像素并高亮显示</c>
+<l>top_hat (Light, StructElement, RegionTopHat)</l>
+<c></c>
+<l>dev_clear_window ()</l>
+<l>dev_display (RegionTopHat)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

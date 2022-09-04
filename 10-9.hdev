@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()</l>
+<l>read_image (Image, 'data/shapes')</l>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<l>get_image_size (Image, Width, Height)</l>
+<l>dev_open_window (0, 0, Width , Height, 'black', WindowHandle)</l>
+<c>*提取出的亚像素边缘edge的图像，得到了一个初始的轮廓</c>
+<l>edges_sub_pix (GrayImage, Edges, 'canny', 2.5, 15, 40)</l>
+<c>*对上一步的轮廓进行分割</c>
+<l>segment_contours_xld (Edges, ContoursSplit, 'lines_circles', 5, 4, 2)</l>
+<c>*提取出轮廓中较长的部分线段</c>
+<l>select_contours_xld (ContoursSplit, SelectedContours, 'contour_length', 20, Width / 2, -0.5, 0.5)</l>
+<c>*对相邻的轮廓段进行连接</c>
+<l>union_adjacent_contours_xld (SelectedContours, UnionContours, 20, 1, 'attr_keep')</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

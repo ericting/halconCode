@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image, 'data/text.jpg')</l>
+<c>*将图像转换为灰度</c>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<c>*由于图像对比度比较低，对图像进行相乘，增强对比度</c>
+<l>mult_image (GrayImage, GrayImage, ImageResult, 0.005, 0)</l>
+<c>*使用平滑滤波器对原始图像进行适当平滑</c>
+<l>mean_image (ImageResult, ImageMean, 50,50)</l>
+<c>*动态阈值分割，提取字符区域</c>
+<l>dyn_threshold (ImageResult, ImageMean, RegionDynThresh, 4, 'not_equal')</l>
+<c>*开运算，去除无意义的小的杂点</c>
+<l>opening_circle (RegionDynThresh, RegionOpening, 1.5)</l>
+<l>dev_clear_window()</l>
+<l>dev_display (RegionOpening)</l>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*清空显示窗口</c>
+<l>dev_close_window ()</l>
+<c>*读取待检测的图像	</c>
+<l>read_image (Image, 'data/crossShape')</l>
+<l>dev_open_window_fit_image (Image, 0, 0, -1, -1, WindowHandle)</l>
+<c>*设置系统绘制的颜色</c>
+<l>dev_set_color ('white')</l>
+<c>*将彩色图像转化为灰度图像，这是为了后面的图像二值化</c>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<c>*创建矩形选区，选择感兴趣部分</c>
+<l>gen_rectangle1 (Rectangle, 100, 127, 325, 490)</l>
+<l>reduce_domain (GrayImage, Rectangle, ROI)</l>
+<l>gen_image_proto (ROI, ImageCleared, 0)</l>
+<c>*进行阈值处理，提取出图中较暗的包含了孔洞的区域</c>
+<l>threshold (ROI, Regions, 50, 255)</l>
+<c>*将其不连通的部分独立分割出来，成为一组区域</c>
+<l>connection (Regions, ConnectedRegions)</l>
+<c>*设置系统绘制的颜色。为了标记选择的区域</c>
+<l>dev_set_color ('yellow')</l>
+<c>*方法一</c>
+<c>*将阈值处理的结果区域作为select_shape算子的输入，根据区域的宽度，选择出目标</c>
+<l>select_shape (ConnectedRegions, SelectedRegions1, 'area', 'and', 1000, 99999)</l>
+<c>*方法二</c>
+<c>*先计算面积，再选择出面积最大的目标</c>
+<l>area_center(ConnectedRegions, Area, Row, Column)</l>
+<l>select_shape (ConnectedRegions, SelectedRegions2, 'area', 'and', max(Area), 99999)</l>
+<c>*方法三</c>
+<l>select_shape_std (SelectedRegions1, SelectedRegion3, 'max_area', 70) </l>
+<l>dev_clear_window ()</l>
+<l>dev_display (SelectedRegion3)</l>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

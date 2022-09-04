@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image,'data/shapes')</l>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<l>auto_threshold(GrayImage,Regions,8.0)</l>
+<c>**下面是直方图波形对比</c>
+<l>*gray_histo (GrayImage, GrayImage, AbsoluteHisto1, RelativeHisto1)</l>
+<l>*gen_region_histo (Histo1, AbsoluteHisto1, 255, 5, 1)</l>
+<l>*dev_clear_window ()</l>
+<l>*create_funct_1d_array (AbsoluteHisto1, Function)</l>
+<l>*smooth_funct_1d_gauss (Function, 8.0, SmoothedFunction)</l>
+<l>*dev_set_color ('red')</l>
+<l>*funct_1d_to_pairs (SmoothedFunction, XValues, YValues)</l>
+<l>*gen_region_histo (Histo2, YValues, 255, 255, 1)</l>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

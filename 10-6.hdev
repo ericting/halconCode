@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image, 'data/flower') </l>
+<c>*转换为单通道灰色图像</c>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<c>*进行亚像素边缘提取。分别使用了不同的滞后阈值以便进行对比</c>
+<l>edges_sub_pix (GrayImage, Edges1, 'lanser2', 0.5, 5, 50) </l>
+<l>edges_sub_pix (GrayImage, Edges2, 'lanser2', 0.5, 25, 50) </l>
+<l>edges_sub_pix (GrayImage, Edges3, 'lanser2', 0.5, 5, 25) </l>
+<c>*将提取结果显示在窗口中</c>
+<l>dev_display (Edges1) </l>
+<l>stop()</l>
+<l>dev_display (Edges2)</l>
+<l>stop()</l>
+<l>dev_display (Edges3)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image, 'data/flower') </l>
+<c>*使用canny算子进行亚像素边缘提取</c>
+<l>edges_color_sub_pix (Image, Edges1, 'canny', 0.5, 5, 50)</l>
+<c>*使用canny算子进行亚像素边缘提取</c>
+<l>edges_color_sub_pix (Image, Edges2, 'sobel_fast', 0.5, 40, 70)</l>
+<l>dev_clear_window ()</l>
+<l>dev_display (Edges1) </l>
+<l>dev_display (Edges2)</l>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

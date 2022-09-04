@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()</l>
+<c>*读取参考图像，这里读取的是单通道灰度图像</c>
+<l>read_image (ModelImage, 'data/bolts-0') </l>
+<c>*设置显示图像、绘制线条等窗口参数</c>
+<l>dev_open_window_fit_image (ModelImage, 0, 0, -1, -1, WindowHandle)</l>
+<l>dev_display (ModelImage)</l>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_line_width(3)</l>
+<l>stop ()</l>
+<c>*定义各个组件, 选取各个组件的ROI区域</c>
+<l>gen_rectangle1 (Rectangle1, 140, 71, 279, 168)</l>
+<l>gen_rectangle1 (Rectangle2, 181, 281,285, 430)</l>
+<l>gen_circle (Circle, 106, 256, 60)</l>
+<c>*将所有组件放进一个名为ComponentRegions的Tuple中</c>
+<l>concat_obj (Rectangle1, Rectangle2, ComponentRegions)</l>
+<l>concat_obj (ComponentRegions, Circle, ComponentRegions)</l>
+<c>*显示参考图像，以及选择的各个组件区域。核对区域选择是否理想</c>
+<l>dev_display (ModelImage)</l>
+<l>dev_display (ComponentRegions)</l>
+<l>stop ()</l>
+<c>*创建基于组件的模板，返回模板句柄ComponentModelID</c>
+<l>create_component_model (ModelImage, ComponentRegions, 20, 20, rad(25), 0, rad(360), 15, 40, 15, 10, 0.8, 3, 0, 'none', 'use_polarity', 'true', ComponentModelID, RootRanking)</l>
+<c>*读取测试图像，该测试图像相对于参考图像有一定的位移和旋转。</c>
+<l>read_image (SearchImage, 'data/bolts-1')</l>
+<c>*在参考图像模板的基础上，进行基于基于组件的匹配</c>
+<l>find_component_model (SearchImage, ComponentModelID, RootRanking, 0, rad(360), 0.5, 0, 0.5, 'stop_search', 'search_from_best', 'none', 0.8, 'interpolation', 0, 0.8, ModelStart, ModelEnd, Score, RowComp, ColumnComp, AngleComp, ScoreComp, ModelComp)</l>
+<c>*显示测试图像</c>
+<l>dev_display (SearchImage)</l>
+<c>*对每一个检测到的组件实例进行可视化的显示</c>
+<l>for Match := 0 to |ModelStart| - 1 by 1</l>
+<l>	dev_set_line_width (4)</l>
+<c>	*获得每个组件的实例和位移旋转等参数</c>
+<l>	get_found_component_model (FoundComponents, ComponentModelID, ModelStart, ModelEnd, RowComp, ColumnComp, AngleComp, ScoreComp, ModelComp, Match, 'false', RowCompInst, ColumnCompInst, AngleCompInst, ScoreCompInst)</l>
+<l>	dev_display (FoundComponents)</l>
+<l>endfor</l>
+<l>stop ()</l>
+<c>*匹配结束，释放模板资源</c>
+<l>clear_component_model (ComponentModelID)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

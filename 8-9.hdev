@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*读取一幅光照不均匀的亮背景图像，这里选取的是一幅彩色图像</c>
+<l>read_image (Image,'data/shapes')</l>
+<c>*变换之前转为灰度图像</c>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<c>*将图像通过阈值处理转化为二值化图像。</c>
+<l>threshold (GrayImage, Regions, 145, 255)</l>
+<c>*创建一个结构元素，这里创建的是一个圆形</c>
+<l>gen_circle(StructElement,10,10,100)</l>
+<c>*清空窗口便于显示结果</c>
+<l>dev_clear_window ()</l>
+<c>*进行底帽操作，提取出较暗区域</c>
+<l>bottom_hat (Regions, StructElement, RegionBottomHat)</l>
+<c>*将较暗区域从原图中提取出来</c>
+<l>reduce_domain (Image, RegionBottomHat, ImageReduced)</l>
+<c></c>
+<l>dev_clear_window ()</l>
+<l>dev_display (ImageReduced)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

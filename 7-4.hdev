@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image, 'data/m105')</l>
+<c>*将原始图像进行通道分离，得到红绿蓝三个分量的图像	</c>
+<l>decompose3 (Image, Red, Green, Blue)</l>
+<c>*将RGB三个分量的图像转化为H（色调）、S（饱和度）、V（明度）的图像</c>
+<l>trans_from_rgb (Red, Green, Blue, ImageResultH, ImageResultS, ImageResultI, 'hsv')</l>
+<c>*对饱和度图像阈值处理，分割出高饱和度区域，即字符区域的大致范围</c>
+<l>threshold (ImageResultS, High, 192,255)</l>
+<c>*区域分割，</c>
+<l>reduce_domain (ImageResultH, High, ImageReduced)</l>
+<c>*并进行膨胀操作</c>
+<l>dilation_circle (ImageReduced, RegionDilation, 3.5)</l>
+<c>*开运算，使边缘更清晰</c>
+<l>opening_circle (RegionDilation, RegionChars, 5.5)</l>
+<l>dev_clear_window ()</l>
+<l>dev_display (RegionChars)</l>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

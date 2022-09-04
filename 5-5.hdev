@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (boardtext, 'calinderdata/text.jpg')</l>
+<l>emphasize (boardtext, ImageEmphasize, 10, 10, 1.5)</l>
+<l>dev_display(ImageEmphasize)</l>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

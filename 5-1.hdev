@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*关闭当前显示窗口，清空屏幕</c>
+<l>dev_close_window ()</l>
+<c>*读取测试图像</c>
+<l>read_image (Image_display, 'data/display.jpg')</l>
+<c>*将图像转化为灰度图像</c>
+<l>rgb1_to_gray (Image_display, GrayImage)</l>
+<c>*获取图像的尺寸</c>
+<l>get_image_size(Image_display,imageWidth, imageHeight)</l>
+<c>*新建显示窗口，适应图像尺寸</c>
+<l>dev_open_window (0, 0, imageWidth, imageHeight, 'black', WindowHandle1)</l>
+<l>dev_display (GrayImage)</l>
+<c>*初始化角点坐标</c>
+<l>XCoordCorners := []</l>
+<l>YCoordCorners := []</l>
+<c>*阈值处理，提取较暗的区域</c>
+<l>threshold(GrayImage,DarkRegion,0, 80)</l>
+<c>*分离不相连的区域</c>
+<l>connection (DarkRegion, ConnectedRegions)</l>
+<c>*选择面积最大的暗色区域，即屏幕区域</c>
+<l>select_shape_std (ConnectedRegions, displayRegion, 'max_area', 70)</l>
+<c>*裁剪屏幕区域</c>
+<l>reduce_domain (GrayImage, displayRegion, displayImage)</l>
+<c>*创建边缘轮廓</c>
+<l>gen_contour_region_xld (displayRegion, Contours, 'border')</l>
+<c>*将轮廓分割为边</c>
+<l>segment_contours_xld (Contours, ContoursSplit, 'lines', 5, 4, 2)</l>
+<c>*获取边的数量</c>
+<l>count_obj (ContoursSplit, Number)</l>
+<c>*存储每条边的起点位置</c>
+<l>for index:=1 to Number by 1</l>
+<l>   select_obj(ContoursSplit, ObjectCurrent, index)</l>
+<c>   *拟合每条边</c>
+<l>   fit_line_contour_xld (ObjectCurrent, 'tukey', -1, 0, 5, 2, RowBegin, ColBegin, RowEnd, ColEnd, Nr, Nc, Dist)</l>
+<c>   *存储每条边的顶点x坐标</c>
+<l>   tuple_concat (XCoordCorners, RowBegin, XCoordCorners)</l>
+<c>   *存储每条边的顶点y坐标</c>
+<l>   tuple_concat (YCoordCorners, ColBegin, YCoordCorners)</l>
+<l>endfor</l>
+<c></c>
+<c>* 投影变换给四个特征点与校正后的坐标建立关联</c>
+<l>XOff:= 100</l>
+<l>YOff:= 100*imageHeight/imageWidth</l>
+<l>hom_vector_to_proj_hom_mat2d (XCoordCorners, YCoordCorners, [1,1,1,1], [YOff,YOff,imageHeight-YOff,imageHeight-YOff], [XOff,imageWidth-XOff,imageWidth-XOff,XOff], [1,1,1,1], 'normalized_dlt', HomMat2D)</l>
+<c>*投影变换</c>
+<l>projective_trans_image (Image_display, Image_rectified, HomMat2D, 'bilinear', 'false', 'false')</l>
+<c>* 显示校正结果</c>
+<l>dev_display (Image_rectified)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*清空当前窗口</c>
+<l>dev_close_window ()</l>
+<l>read_image (Image, 'data/cloth2')</l>
+<l>get_image_size (Image, Width, Height)</l>
+<c>*创建窗口并设置窗口绘制参数</c>
+<l>dev_open_window (0, 0, Width/2, Height/2, 'black', WindowHandle)</l>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_line_width (4)</l>
+<l>dev_set_color ('red')</l>
+<c>*创建一个高斯滤波器，用于将傅里叶转换后的图像进行滤波</c>
+<l>gen_gauss_filter (GaussFilter, 3.0, 3.0, 0.0, 'none', 'rft', Width, Height)</l>
+<c>*开始检测，读取图像</c>
+<l>rgb1_to_gray (Image, ImageGray)</l>
+<c>*对图像进行傅里叶变换，平滑以及还原</c>
+<l>rft_generic (ImageGray, ImageFFT, 'to_freq', 'none', 'complex', Width)</l>
+<l>convol_fft (ImageFFT, GaussFilter, ImageConvol)</l>
+<l>rft_generic (ImageConvol, ImageFiltered, 'from_freq', 'n', 'real', Width)</l>
+<c>*对还原后的图像进行阈值处理，提取出图中明显偏暗的部分，即瑕疵的位置</c>
+<l>threshold (ImageFiltered, ImageDark, 0, 85)</l>
+<c>*由于瑕疵部位可能不止一个，将其分离成独立的区域</c>
+<l>connection (ImageDark, ConnectedRegions)</l>
+<c>*获取瑕疵的数量。</c>
+<c>*如果对瑕疵的形状面积尺寸等有筛选要求的，</c>
+<c>*也可以在这一步之前加入selecct_shape算子进行判断</c>
+<l>count_obj (ConnectedRegions, Number)</l>
+<c>*逐个显示瑕疵的位置并以圆圈标记出来。</c>
+<l>for index := 1 to Number by 1</l>
+<l>	select_obj (ConnectedRegions, shape, index)</l>
+<l>	area_center (shape, Area, Row, Column)</l>
+<l>	gen_circle (Circle, Row, Column, 30)</l>
+<l>	dev_display (Circle)</l>
+<l>endfor</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

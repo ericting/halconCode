@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*清空显示窗口</c>
+<l>dev_close_window()</l>
+<c>*读取模板图像。这里的模板图像是单通道灰度图像，如果是彩色的，还需要做一步转换</c>
+<l>read_image(ModelImage, 'data/meter1')</l>
+<c>*获取图像的尺寸，便于创建合适的窗口进行显示</c>
+<l>get_image_size(ModelImage, Width, Height)</l>
+<c>*创建窗口并设置显示参数</c>
+<l>dev_open_window (0, 0, Width, Height, 'white', WindowHandle)</l>
+<l>dev_display (ModelImage)</l>
+<l>dev_set_color ('yellow')</l>
+<l>dev_set_line_width (5)</l>
+<c></c>
+<c>*设置指针区域的多边形形状坐标</c>
+<l>Rows := [410,308,312,327,428,410]</l>
+<l>Cols := [135,267,283,283,143,135 ]</l>
+<c>*创建形状多边形，该多边形区域应完全的覆盖指针所在的区域。该区域即为感兴趣区域</c>
+<l>gen_region_polygon_filled (ROI, Rows, Cols)</l>
+<c>*创建参考图像，从原模板图像中裁剪出多边形形状区域</c>
+<l>reduce_domain (ModelImage, ROI, ImageROI)</l>
+<c></c>
+<c>*检查形状模板参数，查看金字塔层级的图像</c>
+<l>inspect_shape_model (ImageROI, ShapeModelImages, ShapeModelRegions, 2, 50)</l>
+<c>*显示形状模板图像。以此检查形状模板区域是否理想</c>
+<l>dev_display (ShapeModelRegions)</l>
+<c>*创建形状模板</c>
+<l>create_shape_model (ImageROI, 2, 0, rad(360270), 'auto', 'none', 'ignore_global_polarity', 20, 10,ModelID)</l>
+<c>*获取形状模板的轮廓。用于匹配成功后的显示</c>
+<l>get_shape_model_contours (ShapeModel, ModelID, 1)</l>
+<c></c>
+<c>*读取要检测的图像。这里的检测图像也是单通道灰度图像，如果是彩色的，还需要做一步转换</c>
+<l>read_image(SearchImage, 'data/meter2')</l>
+<c>*进行基于形状模板的匹配，在图中寻找到指针的位置。</c>
+<c>*返回指针的坐标，旋转角度，以及匹配分数</c>
+<l>find_shape_model (SearchImage, ModelID, -rad(360900), rad(360270), 0.7, 1, 0.5, 'least_squares', 0, 0.7, RowCheck, ColumnCheck, AngleCheck, Score)</l>
+<c></c>
+<c>*如果匹配分数达到要求，则匹配成功</c>
+<l>if (|Score| &gt; 0.9)</l>
+<c>	*用于从匹配结果数据中创建一个刚体的仿射变换矩阵</c>
+<l>	vector_angle_to_rigid (0, 0, 0, RowCheck, ColumnCheck, AngleCheck,MovementOfObject)</l>
+<c>	*将形状模板进行仿射变换，使之显示在指针的新位置上</c>
+<l>	affine_trans_contour_xld (ShapeModel, ModelAtNewPosition, MovementOfObject)</l>
+<c>	*将匹配结果显示出来</c>
+<l>	dev_display (SearchImage)</l>
+<l>	dev_display (ModelAtNewPosition)</l>
+<l>endif</l>
+<c>*匹配结束，释放模板资源</c>
+<l>clear_shape_model (ModelID)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

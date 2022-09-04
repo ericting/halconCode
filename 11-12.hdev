@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>* 这个例子用来介绍 HALCON中的形状模板匹配</c>
+<l>dev_close_window()</l>
+<c>*读取图像并获取其宽高</c>
+<l>read_image(ModelImage, 'data/arrow1')</l>
+<l>median_image (ModelImage, ImageMedian, 'circle', 6, 'mirrored')</l>
+<l>get_image_size(ModelImage, Width,Height)</l>
+<l>dev_open_window (0, 0, Width/2, Height/2, 'white', WindowHandle)</l>
+<c>*显示模板图像</c>
+<l>dev_display (ModelImage)</l>
+<c>* 设置画笔颜色和线条</c>
+<l>dev_set_color ('yellow')</l>
+<l>dev_set_line_width (3)</l>
+<c>* -------------------  形状模板匹配程序  ----------------</c>
+<c>*第1步：选择模板中的目标</c>
+<l>Row1 := 281</l>
+<l>Column1 := 160</l>
+<l>Row2 := 440</l>
+<l>Column2 := 312</l>
+<c>*用矩形框选定一个目标区域</c>
+<l>gen_rectangle1 (ROI, Row1, Column1, Row2, Column2)</l>
+<c>*显示ROI区域</c>
+<l>dev_display (ROI)</l>
+<c> *剪裁出这个区域</c>
+<l>reduce_domain (ModelImage, ROI, ImageROI)</l>
+<c>*第2步，创建模板</c>
+<c> *检查模板参数</c>
+<l>inspect_shape_model (ImageROI, ShapeModelImages, ShapeModelRegions, 4, 50)</l>
+<c> *显示金字塔各层级的图像，以检查层数的合理性</c>
+<l>dev_display (ShapeModelRegions)</l>
+<l>area_center (ShapeModelRegions, AreaModelRegions, RowModelRegions,ColumnModelRegions)</l>
+<l>count_obj (ShapeModelRegions, HeightPyramid)</l>
+<c> *确定金字塔的层级</c>
+<l>for i := 1 to HeightPyramid by 1</l>
+<l>if (AreaModelRegions[i - 1] &gt;= 15)</l>
+<l>        NumLevels := i</l>
+<l>    endif</l>
+<l>endfor</l>
+<c> *使用ROI图像创建模板</c>
+<l>create_shape_model (ImageROI, NumLevels, 0, rad(360), 'auto', 'none', 'ignore_global_polarity', 50, 10, ModelID)</l>
+<c>*获取轮廓信息，用于结果显示</c>
+<l>get_shape_model_contours (ShapeModel, ModelID, 1)</l>
+<c>* step 3: 在检测图像中搜索模板</c>
+<c>*读取检测图像</c>
+<l>read_image(SearchImage, 'data/arrow2')</l>
+<c>*寻找最佳模板匹配</c>
+<l>find_shape_model (SearchImage, ModelID, 0, rad(360), 0.3, 1, 0.5, 'least_squares', 0, 0.7,	RowCheck, ColumnCheck, AngleCheck, Score)</l>
+<c>*如果找到了目标，则将它标示出来</c>
+<l>if (|Score| &gt; 0.9)</l>
+<c>	*计算刚性变换矩阵</c>
+<l>	vector_angle_to_rigid (0, 0, 0, RowCheck, ColumnCheck, AngleCheck,	MovementOfObject)</l>
+<c>	*应用二维仿射变换XLD轮廓，以便在图像中显示检测到的轮廓</c>
+<l>	affine_trans_contour_xld (ShapeModel, ModelAtNewPosition, MovementOfObject)</l>
+<c>	*显示检测图像</c>
+<l>     gen_rectangle2 (recResult, RowCheck, ColumnCheck, AngleCheck, 80, 80)</l>
+<l>     dev_set_draw ('margin')</l>
+<l>	dev_display (SearchImage)</l>
+<c>     *标示出检测到的模板</c>
+<l>	dev_display (ModelAtNewPosition)</l>
+<l>	dev_set_color ('blue')</l>
+<l>	dev_display (recResult)</l>
+<l>endif</l>
+<c>* -------------------  程序结束  -----------------</c>
+<c>* 清除模板</c>
+<l>clear_shape_model (ModelID)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

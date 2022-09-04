@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()</l>
+<c>*读取图像，将其转化为灰度图像并显示出来	</c>
+<l>read_image (Image, 'data/logs')</l>
+<l>get_image_size (Image, Width, Height)</l>
+<l>rgb1_to_gray(Image,grayImage)</l>
+<c>*进行全局阈值分割，将亮色区域提取出来</c>
+<l>threshold (grayImage, Bright, 60, 255)</l>
+<c>*开运算去除边缘毛刺</c>
+<l>opening_rectangle1 (Bright, Cut, 1, 7)</l>
+<c>*将非连通区域分割成独立区域</c>
+<l>connection (Cut, ConnectedRegions)</l>
+<c>*根据面积选择表示截面比较小的木材的区域	</c>
+<l>select_shape (ConnectedRegions, smallRegions, 'area', 'and', 500, 20000)</l>
+<c>*对粘连区域做腐蚀操作，根据腐蚀的情况和面积，选出截面区域</c>
+<l>*count_obj(SelectedRegions2,number1)</l>
+<c>*根据面积选择表示截面比较大的木材的区域，可能有粘连和区域重叠的情况	</c>
+<l>select_shape (ConnectedRegions, largeRegions, 'area', 'and', 20000, 1000000)</l>
+<l>erosion_circle(largeRegions,erisionedLargeRegions,8.5)</l>
+<c>*将非连通区域分割成独立区域</c>
+<l>connection (erisionedLargeRegions, ConnectedRegions2)</l>
+<c>*再次选择符合面积条件的区域，排除杂点</c>
+<l>select_shape (ConnectedRegions2, SelectedRegions3, 'area', 'and', 150, 200000)</l>
+<c>*区域合并</c>
+<l>concat_obj(smallRegions, SelectedRegions3, ObjectsConcat)</l>
+<c>*区域计数</c>
+<l>count_obj(ObjectsConcat,number3)</l>
+<c>*创建窗口用于显示结果</c>
+<l>dev_open_window (0, 0, Width, Height, 'black', WindowHandle)</l>
+<l>dev_display(ObjectsConcat)</l>
+<l>set_display_font (WindowHandle,18, 'mono', 'true', 'true')</l>
+<c>*显示计数的结果，程序结束</c>
+<l>disp_message(WindowHandle, 'Number of logs : '+number3, 'image', 30, 50, 'blue', 'true')</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

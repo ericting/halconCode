@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()</l>
+<l>read_image(Image,'data/flower')</l>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<l>gen_image_proto (Image, ImageCleared, 1)</l>
+<l>dev_open_window (0, 0, 256, 256, 'black', WindowHandle1)</l>
+<l>dev_open_window (0, 256, 256, 256, 'black', WindowHandle2)</l>
+<l>dev_open_window (0, 512, 256, 256, 'black', WindowHandle3)</l>
+<l>edges_image (GrayImage, ImaAmpGray, ImaDirGray, 'canny', 1, 'none', -1, -1)</l>
+<l>edges_image (GrayImage, ImaAmpGrayNMS, ImaDirGrayHyst, 'canny', 1, 'nms',20, 40) </l>
+<c>*对非极大值抑制后的边缘梯度图像进行了阈值处理</c>
+<l>threshold (ImaAmpGrayNMS, RegionGray, 1, 255) </l>
+<c>*提取边缘轮廓</c>
+<l>skeleton (RegionGray, EdgesGray) </l>
+<c>*用于结果显示和对比</c>
+<l>dev_set_window (WindowHandle1)</l>
+<l>dev_display (ImageCleared) </l>
+<l>dev_display (ImaAmpGray) </l>
+<l>dev_set_window (WindowHandle2)</l>
+<l>dev_display (ImageCleared) </l>
+<l>dev_display (ImaAmpGrayNMS) </l>
+<l>dev_set_window (WindowHandle3)</l>
+<l>dev_display (ImageCleared) </l>
+<l>dev_display (EdgesGray)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

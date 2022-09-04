@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*使用相机参数校正畸变</c>
+<c>* CameraParameters为相机的内部参数</c>
+<l>CameraParameters := [0.0271606, -518.0, 1.48e-005, 1.48e-005, 271.343, 260.681, 640, 480]</l>
+<c>* CameraPose为相机的外部参数，即位姿</c>
+<l>CameraPose := [0.258487, -0.018, 4.954, 2.0, 14.0, 2.4, 0]</l>
+<l>scaleParam := 1920/1080.0</l>
+<c>*读取待校正的图像</c>
+<l>read_image (Image, 'data/chess')</l>
+<c>*调整原点的位姿</c>
+<l>set_origin_pose (CameraPose, -1,-0.7, 0, rectificationPose)</l>
+<c>*生成用于校正的映射图，用来描述图像坐标系与世界坐标系之间的映射</c>
+<l>gen_image_to_world_plane_map(rectificationMap,CameraParameters, rectificationPose, 640, 480, 640, 480, scaleParam/ 640, 'bilinear')</l>
+<c>*利用映射图rectificationMap进行图像的校正</c>
+<l>map_image (Image, rectificationMap, rectifiedImage)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

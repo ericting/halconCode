@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image, 'data/codes.jpg')</l>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<l>binary_threshold (GrayImage, RegionMaxSeparabilityLight, 'max_separability', 'dark', UsedThreshold)</l>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

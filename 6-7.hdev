@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image,'data/holes.jpg')</l>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<c>*设置矩形，选择感兴趣区域</c>
+<l>gen_rectangle1 (Rectangle, 170, 80, 370, 510)</l>
+<l>reduce_domain (GrayImage, Rectangle, ImageReduced)</l>
+<l>var_threshold (ImageReduced, Region, 15, 15, 0.2, 35, 'dark')</l>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

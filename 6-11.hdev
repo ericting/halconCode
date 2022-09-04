@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*输入待检测的木材图像</c>
+<l>read_image (Image, 'data/woodboard')</l>
+<c>*将原始图转化为灰度图。便与后续的平滑处理</c>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<c>*对单通道图像进行高斯平滑处理，以去除噪声</c>
+<l>gauss_filter (GrayImage, ImageGauss, 11)</l>
+<c>*对高斯平滑后的图像进行分水岭处理，阈值分割，提取出盆地区域</c>
+<l>watersheds (ImageGauss, Basins1, Watersheds)</l>
+<l>watersheds_threshold(ImageGauss, Basins, 50)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

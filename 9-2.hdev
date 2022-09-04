@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*清空显示窗口</c>
+<l>dev_close_window ()</l>
+<c>*读取包含孔洞的图片</c>
+<l>read_image (Image, 'data/holes2')</l>
+<c>*打开新的显示窗口</c>
+<l>dev_open_window_fit_image (Image, 0, 0, -1, -1, WindowHandle)</l>
+<c>*将彩色图像转化为灰度图像，这是为了后面的图像二值化</c>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<c>*进行阈值处理，提取出图中较亮的有封闭区域的（孔洞以外）背景区域</c>
+<l>threshold (GrayImage, Region, 50,255)</l>
+<c>*将背景区域作为area_holes算子的输入，计算所有孔洞的面积</c>
+<l>area_holes (Region, Area)</l>
+<c>*将面积计算结果以字符串形式显示在窗口中</c>
+<l>disp_message (WindowHandle, 'Size of holes: ' + Area + ' pixel', 'window', 10, 10, 'black', 'true')</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

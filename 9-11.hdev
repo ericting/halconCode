@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()</l>
+<c>*读取输入的图片</c>
+<l>read_image (Image, 'data/board')</l>
+<c>*将输入的彩色图像转为黑白图像</c>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<l>get_image_size (GrayImage, Width, Height)</l>
+<c>*创建一个与输入图像同样大小的窗口</c>
+<l>dev_open_window (0, 0, Width/4, Height/4, 'black', WindowID)</l>
+<c>*设定画笔宽度</c>
+<l>dev_set_line_width (5)</l>
+<c>*创建两个窗口用于显示参数计算的结果</c>
+<l>dev_open_window (0, 512, 320, 320, 'black', WindowID1)</l>
+<l>dev_open_window (512, 512, 320, 320, 'black', WindowID2)</l>
+<c>*分别设置两个矩阵，选择不同的两部分区域</c>
+<l>gen_rectangle1 (Rectangle1, 200,10, 380, 190)</l>
+<l>gen_rectangle1 (Rectangle2, 580, 650, 730, 800)</l>
+<c>*分别对两个矩形求取灰度共生矩阵Matrix1和Matrix2</c>
+<l>gen_cooc_matrix (Rectangle1, GrayImage, Matrix1, 6, 0)</l>
+<l>gen_cooc_matrix (Rectangle2, GrayImage, Matrix2, 6, 0)</l>
+<c>*分别对Matrix1和Matrix2提取灰度特征参数</c>
+<l>cooc_feature_matrix (Matrix1, Energy1, Correlation1, Homogeneity1, Contrast1)</l>
+<l>cooc_feature_matrix (Matrix2, Energy2, Correlation2, Homogeneity2, Contrast2)</l>
+<c>*采取另一种方式，直接对矩阵2的图像求灰度特征参数，结果与上面两步计算出的参数是一致的</c>
+<l>cooc_feature_image (Rectangle2, GrayImage, 6, 0, Energy3, Correlation3, Homogeneity3, Contrast3)</l>
+<c>*显示图像窗口和两个矩形的灰度共生矩阵</c>
+<l>dev_set_window (WindowID)</l>
+<l>dev_set_draw ('margin')</l>
+<l>dev_display (GrayImage)</l>
+<l>dev_display (Rectangle1)</l>
+<l>dev_set_color('yellow')</l>
+<l>dev_display (Rectangle2)</l>
+<l>dev_set_window (WindowID1)</l>
+<l>dev_display (Matrix1)</l>
+<c>*以字符串的形式，分别在两个矩阵的对应窗口上显示灰度特征值的计算结果</c>
+<l>String := ['Energy: ','Correlation: ','Homogeneity: ','Contrast: ']</l>
+<l>dev_set_color('red')</l>
+<l>disp_message (WindowID1, String$'-14s' + [Energy1,Correlation1,Homogeneity1,Contrast1]$'6.3f', 'window', 12, 12, 'white', 'false')</l>
+<l>dev_set_window (WindowID2)</l>
+<l>dev_display (Matrix2)</l>
+<l>dev_set_color('yellow')</l>
+<l>String := ['Energy: ','Correlation: ','Homogeneity: ','Contrast: ']</l>
+<l>disp_message (WindowID2, String$'-14s' + [Energy2,Correlation2,Homogeneity2,Contrast2]$'6.3f', 'window', 12, 12, 'white', 'false')</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

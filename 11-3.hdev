@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*读取参考图像</c>
+<l>read_image(Image, 'data/labelShape-0')</l>
+<c>*根据要匹配的目标，围绕目标创建一个矩形，获取ROI区域</c>
+<l>gen_rectangle1 (Rectangle, 34, 290, 268, 460)</l>
+<c>*对ROI区域进行裁剪，得到模板图像</c>
+<l>reduce_domain (Image, Rectangle, ImageReduced)</l>
+<c>*测试金字塔的层级参数</c>
+<l>inspect_shape_model (ImageReduced, ModelImages, ModelRegions, 4, 30)</l>
+<c>*设置显示图像、绘制线条的线宽等窗口参数</c>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_line_width(3)</l>
+<l>dev_display(Image)</l>
+<l>dev_display(Rectangle)</l>
+<c>*根据剪裁的模板图像创建基于形状的模板，返回模板句柄ShapeModelID</c>
+<l>create_shape_model (ImageReduced, 5, rad(-10), rad(20), 'auto', 'none', 'use_polarity', 20, 10, 	ShapeModelID)</l>
+<l>stop()</l>
+<c>*读取用于测试的图像</c>
+<l>read_image(SearchImage, 'data/labelShape-1')</l>
+<c>*使用匹配算子进行形状模板匹配</c>
+<l>find_shape_model (SearchImage, ShapeModelID, 0, rad(360), 0.5, 3, 0, 'least_squares', 0, 0.5, 	RowCheck, ColumnCheck, AngleCheck, Score)</l>
+<c>*显示匹配结果，将匹配得到的实例以形状轮廓的形式绘制出来</c>
+<l>dev_display_shape_matching_results (ShapeModelID, 'red', RowCheck, ColumnCheck, AngleCheck, 1, 1, 0)</l>
+<c>*匹配结束，释放模板资源</c>
+<l>clear_shape_model (ShapeModelID)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

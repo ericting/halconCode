@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()	</l>
+<l>read_image (Image, 'data/garlic2')</l>
+<l>get_image_size (Image, Width, Height)</l>
+<l>dev_open_window (0, 0, Width/2, Height/2, 'black', WindowHandle)</l>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<c>*使阈值处理提取出了较暗的区域</c>
+<l>threshold (GrayImage, Region, 100, 255)</l>
+<c>*将非连通区域分割成一组区域的集合</c>
+<l>connection (Region, ConnectedRegions)</l>
+<c>*利用面积特征，将比较大快的区域分割出来</c>
+<l>select_shape(ConnectedRegions,selectRegion,'area','and',50000,200000)</l>
+<c>*求最小外接矩形</c>
+<l>smallest_rectangle2 (selectRegion, Row1, Column1, Phi, Length1, Length2)</l>
+<c>*根据矩形参数创建举行的轮廓</c>
+<l>gen_rectangle2_contour_xld (Rectangle1, Row1, Column1, Phi, Length1, Length2)</l>
+<c>*显示最小外接矩形</c>
+<l>dev_set_window (WindowHandle)</l>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_line_width (3)</l>
+<l>dev_display (Image)</l>
+<l>dev_display (Rectangle1)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

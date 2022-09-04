@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (board, 'data/boardEqu')</l>
+<l>rgb1_to_gray (board, GrayImage)</l>
+<l>equ_histo_image (GrayImage, ImageEquHisto)</l>
+<c>*显示直方图</c>
+<l>gray_histo (board, board, AbsoluteHisto1, RelativeHisto1)</l>
+<l>gray_histo (ImageEquHisto, ImageEquHisto, AbsoluteHisto2, RelativeHisto2)</l>
+<l>dev_open_window (0, 0, 512, 512, 'black', WindowHandle)</l>
+<l>dev_set_color ('red')</l>
+<l>gen_region_histo (Histo1, AbsoluteHisto1, 255, 5, 1)</l>
+<l>dev_set_color ('green')</l>
+<l>gen_region_histo (Histo2, AbsoluteHisto2, 255, 450, 1)</l>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

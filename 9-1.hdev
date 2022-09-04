@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()</l>
+<c>*读取图片</c>
+<l>read_image(Image, 'data/holes')</l>
+<c>*设置窗口属性，为了获取窗口句柄，供后面显示文字用</c>
+<l>get_image_size (Image, Width, Height)</l>
+<c>*创建新窗口</c>
+<l>dev_open_window (0, 0, Width, Height, 'black', WindowID)</l>
+<c>*将图像转化为单通道灰度图</c>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<c>*创建矩形选区，选择感兴趣部分</c>
+<l>gen_rectangle1 (Rectangle, 180, 83, 371, 522)</l>
+<l>reduce_domain (GrayImage, Rectangle, ROI)</l>
+<c>*阈值处理，提取图中深色部分，也就是文字部分，这里阈值设置为50，基本可以取出所有黑色文字</c>
+<l>threshold ( ROI, Region, 0, 80)</l>
+<l>*gen_image_proto (ImageReduced, ImageCleared, 0)</l>
+<l>*dev_display (Region)</l>
+<c>*提取中的整个区域中将不相连的部分分割成独立的区域</c>
+<l>connection (Region, ConnectedRegions)</l>
+<c>*获取不相连的区域的数量</c>
+<l>count_obj (ConnectedRegions, Num)</l>
+<c>*计算所有不相连区域的面积和中心点坐标。Area表示面积, Row和 Column分别表示中心点坐标</c>
+<l>area_center (ConnectedRegions, Area, Row, Column)</l>
+<c>*打印各区域的面积</c>
+<l>for i := 1 to Num by 1</l>
+<l>    dev_set_color ('red')</l>
+<l>	select_obj (ConnectedRegions, ObjectSelected, i)</l>
+<c>	*设定了输出文字的起始坐标点</c>
+<l>	set_tposition (WindowID, Row[i - 1]+40, Column[i - 1])</l>
+<c>	*设置打印文字的颜色</c>
+<l>	dev_set_color ('blue')</l>
+<c>	*设置字体</c>
+<l>    set_font (WindowID, '-System-32-*-*-0-0-0-1-GB2312_CHARSET-')</l>
+<c>    *输出文字内容，即该区域的面积</c>
+<l>	write_string (WindowID, Area[i-1])</l>
+<l>endfor</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

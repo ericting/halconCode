@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image,'data/shapes')</l>
+<l>decompose3 (Image, Red, Green, Blue)</l>
+<l>trans_from_rgb (Red, Green, Blue, Hue, Saturation, Intensity, 'hsv')</l>
+<l>threshold (Saturation, Regions, 180, 255)</l>
+<l>gen_circle(StructElement,10,10,10)</l>
+<c>*清理显示窗口，以便显示结果</c>
+<l>dev_clear_window ()</l>
+<c>*清理显示窗口，以便显示结果</c>
+<l>bottom_hat (Regions, StructElement, RegionBottomHat)</l>
+<l>dev_clear_window ()</l>
+<l>dev_display (RegionBottomHat)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

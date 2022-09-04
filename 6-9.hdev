@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image(Image,'data/village')</l>
+<c>*对原图进行了均值处理，选用了5*5的滤波器</c>
+<l>mean_image(Image,Mean,5,5)</l>
+<c>*使用了区域生长算子寻找颜色相似的邻域</c>
+<l>regiongrowing(Mean,Regions,1,1,3.0,100)</l>
+<c>*对提取区域做了形态学处理，使区域更加平滑和完整</c>
+<l>closing_circle (Regions, RegionClosing, 3.5)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

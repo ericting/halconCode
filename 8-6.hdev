@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image,'data/shapes')</l>
+<c>*将图像进行通道分解，分别转换为三个通道的RGB图像</c>
+<l>decompose3 (Image, Red, Green, Blue)</l>
+<c>*使用颜色转换将RGB三个通道图像转化为HSV通道的图像</c>
+<l>trans_from_rgb (Red, Green, Blue, Hue, Saturation, Intensity, 'hsv')</l>
+<c>*对饱和度通道的图像进行阈值处理</c>
+<l>threshold (Saturation, Regions, 180, 255)</l>
+<c>*创建圆形结构元素用于闭运算</c>
+<l>gen_circle(StructElement,10,10,10)</l>
+<c>*对图像中较亮的区域进行闭运算处理，填补了各自轮廓中的小空隙</c>
+<l>closing(Regions,StructElement,Large)</l>
+<c></c>
+<l>dev_clear_window ()</l>
+<l>dev_display (Large)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

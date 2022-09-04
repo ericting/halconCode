@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()</l>
+<c>*读取图像</c>
+<l>read_image (Image, 'data/crossShape')</l>
+<l>get_image_size (Image, Width, Height)</l>
+<l>dev_open_window (0, 0, Width, Height, 'black', WindowID)</l>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<c>*创建矩形选区，选择感兴趣部分</c>
+<l>gen_rectangle1 (Rectangle, 100, 127, 325, 490)</l>
+<l>reduce_domain (GrayImage, Rectangle, ROI)</l>
+<c>*进行阈值处理，提取出图中较暗的包含了孔洞的区域</c>
+<l>threshold (ROI, Regions, 50, 255)</l>
+<c>*将其不连通的部分独立分割出来，成为一组区域</c>
+<l>connection (Regions, ConnectedRegions)</l>
+<l>select_shape_std (ConnectedRegions, SelectedRegion3, 'max_area', 70) </l>
+<l>dev_set_draw ('fill')</l>
+<c>*求出了三个区域的最大内接圆的中心和半径</c>
+<l>inner_circle(SelectedRegion3,Row,Column,Radius)</l>
+<c>*绘制圆形</c>
+<l>gen_circle(Circles,Row,Column,Radius)</l>
+<l>dev_set_window (WindowID)</l>
+<l>*gen_image_proto (ROI, ImageCleared, 0)</l>
+<l>*dev_display (SelectedRegion3)</l>
+<c>*绘制形状的边缘</c>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_line_width (3)</l>
+<c>*显示内接圆形</c>
+<l>dev_display (Image)</l>
+<l>dev_display (Circles)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

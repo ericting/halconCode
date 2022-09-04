@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*关闭当前显示窗口，清空屏幕</c>
+<l>dev_close_window ()</l>
+<c>*读取测试图像</c>
+<l>read_image (Image_display, 'data/display.jpg')</l>
+<c>*获取图像的尺寸</c>
+<l>get_image_size(Image_display,imageWidth, imageHeight)</l>
+<c>*新建显示窗口，适应图像尺寸</c>
+<l>dev_open_window (0, 0, imageWidth, imageHeight, 'black', WindowHandle)</l>
+<l>dev_display (Image_display)</l>
+<l>gen_rectangle1 (ROI_0, 52, 46, 456, 574)</l>
+<c>*裁剪屏幕区域</c>
+<l>reduce_domain (Image_display, ROI_0, reducedImage)</l>
+<l>dev_open_window (0, 400, imageWidth, imageHeight, 'black', WindowHandle1)</l>
+<c>* 显示校正结果</c>
+<l>dev_display (reducedImage)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

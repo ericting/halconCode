@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window()</l>
+<l>read_image (Image, 'data/modelWords')</l>
+<l>get_image_size(Image,width,height)</l>
+<l>dev_open_window (0, 0, width, height, 'black', WindowHandle)</l>
+<l>rgb1_to_gray (Image, GrayImage)  </l>
+<l>gen_empty_obj (EmptyObject)</l>
+<l>for Index := 1 to 4 by 1</l>
+<l>	disp_message (WindowHandle, '请框选单个汉字区域，右键确认：','window', 12, 12, 'yellow', 'false')</l>
+<l>	draw_rectangle1 (WindowHandle, Row1, Column1, Row2, Column2)</l>
+<c>	 **根据画的矩形生成对应的矩形</c>
+<l>	gen_rectangle1 (Rectangle, Row1, Column1, Row2, Column2)</l>
+<l>	reduce_domain (GrayImage, Rectangle, ImageReduced1)</l>
+<c>	 *阈值处理</c>
+<l>	threshold (ImageReduced1, Region1, 128, 255)</l>
+<c>	 *准备接收所有提取的字符区域</c>
+<l>	concat_obj (EmptyObject, Region1, EmptyObject)</l>
+<l>endfor</l>
+<l>words:=['艺','术','中','心']</l>
+<c>*排序</c>
+<l>sort_region (EmptyObject, SortedRegions1, 'character', 'true', 'row')</l>
+<l>for Index1:=1 to 4 by 1</l>
+<l>select_obj (SortedRegions1, ObjectSelected1, Index1)</l>
+<l>append_ocr_trainf (ObjectSelected1, Image, words[Index1-1], 'data/yszx.trf')</l>
+<l>endfor</l>
+<l>read_ocr_trainf_names ('data/yszx.trf', CharacterNames, CharacterCount)</l>
+<l>create_ocr_class_mlp (50, 60, 'constant', 'default', CharacterNames, 80, 'none', 10, 42, OCRHandle)</l>
+<l>trainf_ocr_class_mlp (OCRHandle, 'data/yszx.trf', 200, 1, 0.01, Error, ErrorLog)</l>
+<l>write_ocr_class_mlp (OCRHandle, 'data/yszx.omc')</l>
+<c>*导入另一张做测试的图</c>
+<l>read_image (ImageTest, 'data/testWords.jpg')</l>
+<l>rgb1_to_gray (ImageTest, Image1)</l>
+<l>threshold (Image1, testwordregion, 125, 255)</l>
+<c>*对符合条件的字符区域进行分割</c>
+<l>connection (testwordregion, ConnectedwordRegions)</l>
+<c>*筛选符合条件的字符形状区域</c>
+<l>select_shape (ConnectedwordRegions, SelectedwordRegions, 'area', 'and', 700, 2500)</l>
+<c>*从左到右，排序</c>
+<l>sort_region (SelectedwordRegions, SortedRegions2, 'upper_left', 'true', 'column')</l>
+<l>count_obj(SortedRegions2, Number)</l>
+<c>*开始字符识别</c>
+<l>read_ocr_class_mlp ('data/yszx.omc', OCRHandle1)</l>
+<l>do_ocr_multi_class_mlp (SortedRegions2, Image1, OCRHandle1, Class, Confidence)</l>
+<c>*显示结果</c>
+<l>disp_message(WindowHandle, '识别结果：', 'image', 10, 10, 'white', 'false')</l>
+<l>for i:=1 to 4 by 1</l>
+<l>	disp_message(WindowHandle, Class[i-1], 'image', 90, 60*i, 'yellow', 'false')</l>
+<l>endfor</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

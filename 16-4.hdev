@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*关闭当前窗口</c>
+<l>dev_close_window ()</l>
+<l>read_image (Image, 'data/cloth4')</l>
+<l>get_image_size (Image, Width, Height)</l>
+<l>dev_open_window (0, 0, Width/2, Height/2, 'black', WindowHandle)</l>
+<l>dev_set_line_width (4)</l>
+<c>*创建两个高斯滤波器</c>
+<l>gen_gauss_filter (GaussFilter1, 30.0, 30.0, 0.0, 'none', 'rft', Width, Height) </l>
+<l>gen_gauss_filter (GaussFilter2,3.0, 3.0, 0.0, 'none', 'rft', Width, Height) </l>
+<l>sub_image (GaussFilter1, GaussFilter2, Filter, 1, 0) </l>
+<l>rgb1_to_gray (Image, ImageGray)</l>
+<c>*对图像进行傅里叶变换，滤波以及还原</c>
+<l>rft_generic (ImageGray, ImageFFT, 'to_freq', 'none', 'complex', Width)</l>
+<l>convol_fft (ImageFFT, Filter, ImageConvol)</l>
+<l>rft_generic (ImageConvol, ImageFiltered, 'from_freq', 'n', 'real', Width)</l>
+<l>scale_image_range (ImageFiltered, ImageScaled, 0, 255) </l>
+<c>*使用形态学方法提取污染区域</c>
+<l>threshold (ImageScaled, Region, 0, 1) </l>
+<l>erosion_circle (Region, RegionErosion, 11.5)</l>
+<l>connection (RegionErosion, ConnectedRegions)</l>
+<l>select_shape_std (ConnectedRegions, SelectedRegions, 'max_area', 70)</l>
+<l>dilation_circle (SelectedRegions, RegionDirty, 9.5)</l>
+<c>*显示提取结果</c>
+<l>dev_display (Image)</l>
+<l>dev_set_draw ('margin')</l>
+<l>dev_display (RegionDirty)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

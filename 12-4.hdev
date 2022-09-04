@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*关闭当前窗口</c>
+<l>dev_close_window ()</l>
+<c>*创建新窗口</c>
+<l>dev_open_window (0, 0, 512, 512, 'black', WindowHandle)</l>
+<c>*设置绘制形状的方式</c>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_line_width (3)</l>
+<c>*创建mlp分类器，特征数为1，输出类为2个，输出方法选择‘softmax’用于分类</c>
+<l>create_class_mlp (1, 1, 2, 'softmax', 'normalization', 3, 42, MLPHandle)</l>
+<c>*创建训练样本图像与其分类的对应关系</c>
+<c>*图像和分类名称一一对应</c>
+<l>FileNames := ['m1','m2','m3','m4']</l>
+<l>Classes := [0,0,1,1]</l>
+<l>for J := 0 to |FileNames| - 1 by 1</l>
+<c>	*读取训练图像</c>
+<l>	read_image (Image, 'data/' + FileNames[J])</l>
+<l>	dev_display (Image)</l>
+<c>	*对图像进行分割</c>
+<l>    rgb1_to_gray (Image, GrayImage)</l>
+<l>    threshold (GrayImage, darkRegion, 0, 105)</l>
+<l>    connection (darkRegion, ConnectedRegions)</l>
+<l>    select_shape (ConnectedRegions, SelectedRegions, 'area', 'and', 2000, 99999)</l>
+<l>	fill_up (SelectedRegions, Objects)</l>
+<l>	dev_display (Objects)</l>
+<l>	disp_message (WindowHandle, 'Add Sample ' + J + ', Class Index ' + Classes[J], 'window', 10, 10, 'black', 'true')</l>
+<c>	*将分割后的对象objects添加进分类器对应的分类Classes[J]中</c>
+<l>	count_obj (Objects, Number)</l>
+<c>    *提取特征（圆度）</c>
+<l>    for N := 1 to Number by 1</l>
+<l>      select_obj (Objects, Region, N)</l>
+<l>      circularity (Region, Circularity)</l>
+<l>      add_sample_class_mlp (MLPHandle, Circularity,Classes[J])</l>
+<l>    endfor</l>
+<l>    stop()</l>
+<l>	disp_continue_message (WindowHandle, 'black', 'true')</l>
+<l>endfor</l>
+<l>dev_clear_window ()</l>
+<l>disp_message (WindowHandle, 'Training...', 'window', 10, 10, 'black', 'true')</l>
+<c>*训练mlp分类器</c>
+<l>train_class_mlp (MLPHandle, 200, 1, 0.01, Error, ErrorLog)</l>
+<l>clear_samples_class_mlp (MLPHandle)</l>
+<c></c>
+<c>*读取输入的待检测图像</c>
+<l>read_image (testImage, 'data/m5')</l>
+<l>rgb1_to_gray (testImage, GrayTestImage)</l>
+<c>*将图像进行分割</c>
+<l>threshold (GrayTestImage, darkTestRegion, 0, 105)</l>
+<l>connection (darkTestRegion, ConnectedTestRegions)</l>
+<l>select_shape (ConnectedTestRegions, SelectedTestRegions, 'area', 'and', 1500, 99999)</l>
+<l>fill_up (SelectedTestRegions, testObjects)</l>
+<c>*将分割后的对象objects进行分类</c>
+<l>count_obj (testObjects, Number)</l>
+<l>Classes := []</l>
+<l>Colors := ['yellow','magenta']</l>
+<l>dev_set_colored (6)</l>
+<l>dev_display (testImage)</l>
+<c>*提取特征（圆度）</c>
+<l>for J := 1 to Number by 1</l>
+<l>    select_obj (testObjects, singleRegion, J)</l>
+<l>    circularity (singleRegion, Circularity)</l>
+<l>    classify_class_mlp (MLPHandle, Circularity, 1, Class, Confidence)</l>
+<l>    Classes := [Classes,Class]</l>
+<l>    dev_set_color (Colors[Classes[J-1]])</l>
+<l>    dev_display (singleRegion)</l>
+<l>endfor</l>
+<c></c>
+<c>*清除MLP分类器，释放内存</c>
+<l>clear_class_mlp (MLPHandle)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

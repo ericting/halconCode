@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (test, 'data/label')</l>
+<c>*通道分离</c>
+<l>decompose3(test, image1, image2, image3)</l>
+<l>mean_image (image1, Mean1, 9, 9)</l>
+<l>emphasize (Mean1, em1, 5, 5, 1.5)</l>
+<l>illuminate (em1, ImageI1, 20, 20, 0.55)</l>
+<l>equ_histo_image (image2, ImageEquHisto2)</l>
+<l>equ_histo_image (image3, ImageEquHisto3)</l>
+<l>compose3 (ImageI1, ImageEquHisto2, ImageEquHisto3, MultiChannelImage)</l>
+<l>dev_display(MultiChannelImage)	</l>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

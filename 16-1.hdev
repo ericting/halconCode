@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*清空当前窗口</c>
+<l>dev_close_window ()</l>
+<c>*读取测试图像</c>
+<l>read_image (Image, 'data/cloth1')</l>
+<c>*获取图像的宽</c>
+<l>get_image_size (Image, Width, Height)</l>
+<c>*创建显示窗口，并设置窗口及绘制参数</c>
+<l>dev_open_window (0, 0, Width, Height, 'black', WindowHandle)</l>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_line_width (3)</l>
+<l>dev_set_color ('red')</l>
+<c>*创建一个高斯滤波器，用于将傅里叶转换后的图像进行滤波</c>
+<l>gen_gauss_filter (GaussFilter, 3.0, 3.0, 0.0, 'none', 'rft', Width, Height)</l>
+<c>*开始检测</c>
+<c>*将测试图像转化为单通道的灰度图像</c>
+<l>rgb1_to_gray (Image, ImageGray)</l>
+<c>*对灰度图像进行颜色反转</c>
+<l>invert_image (ImageGray, ImageInvert)</l>
+<c>*对反转后的图像进行傅里叶变换</c>
+<l>rft_generic (ImageInvert, ImageFFT, 'to_freq', 'none', 'complex', Width)</l>
+<c>*对傅里叶图像做卷积，使用之前创建的高斯滤波器作为卷积核</c>
+<l>convol_fft (ImageFFT, GaussFilter, ImageConvol)</l>
+<c>*将卷积后的傅里叶图像还原为空间域图像。可见图像的突变部分得到了增强</c>
+<l>rft_generic (ImageConvol, ImageFiltered, 'from_freq', 'n', 'real', Width)</l>
+<c>*设置提取线条的参数</c>
+<l>calculate_lines_gauss_parameters (17, [25,3], Sigma, Low, High)</l>
+<c>*将图像中的有灰度差异的线条提取出来</c>
+<l>lines_gauss (ImageFiltered, Lines, Sigma, Low, High, 'dark', 'true', 'gaussian', 'true')</l>
+<c>*将提取出的结果显示出来</c>
+<l>dev_display (Image)</l>
+<l>dev_display (Lines)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

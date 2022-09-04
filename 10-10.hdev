@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()</l>
+<c>*读取了图像并创建显示窗口</c>
+<l>read_image (Image, 'data/flower')</l>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<l>get_image_size (Image, Width, Height)</l>
+<l>dev_open_window (0, 0, Width , Height, 'black', WindowHandle)</l>
+<l>dev_set_color ('white')</l>
+<c>*对图像进行阈值处理</c>
+<l>threshold (GrayImage, Region, 130, 255)</l>
+<c>*使用闭运算进行填充</c>
+<l>closing_circle (Region, Region, 20.5)</l>
+<c>*获取前景目标的初始轮廓</c>
+<l>gen_contour_region_xld (Region, Contour, 'border')</l>
+<c>*拟合圆形轮廓</c>
+<l>fit_circle_contour_xld (Contour, 'atukey', -1, 2, 0, 10, 1, Row, Column, Radius, StartPhi, EndPhi, PointOrder)</l>
+<c>*生成该拟合的圆形轮廓</c>
+<l>gen_circle_contour_xld (ContCircle, Row, Column, Radius, 0, 4 * acos(0), 'positive', 1)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

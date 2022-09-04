@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image(ImageRec1,'data/stereo-left')</l>
+<l>read_image(ImageRec2,'data/stereo-right')</l>
+<l>binocular_disparity (ImageRec1, ImageRec2, Disparity, Score, 'ncc', 11, 11, 0, -150, 30, 4, 0.6, 'none', 'none')</l>
+<c>*将整幅视差图像转换为3d点图。</c>
+<c>*计算后输出的三张图，三张图的灰度分别表示视差图中的对应位置的点在X, Y, Z轴的坐标</c>
+<l>CamParamRect1 := [0.0121606, 0.0, 1.48e-005, 1.48e-005, -101.343, 120.681, 337, 242]</l>
+<l>CamParamRect2:=[0.0121606, 0.0, 1.48e-005, 1.48e-005, 546.365, 120.681, 364, 242]</l>
+<l>Cam1PoseRect1:=[0.158487, 0.0, 0.0, 0.0, 0.0, 0.0, 0]</l>
+<l>disparity_image_to_xyz(Disparity, ImgX, ImgY, ImgZ,CamParamRect1, CamParamRect2, Cam1PoseRect1) </l>
+<c>*释放相机资源</c>
+<l>*close_framegrabber(AcqHandle1)</l>
+<l>*close_framegrabber(AcqHandle2)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()</l>
+<c>*读取参考图像，这里读取的是单通道灰度图像	</c>
+<c>*这里的参考图像是已经剪裁好的感兴趣区域图像，可以直接作为模板图像</c>
+<l>read_image (ModelImage, 'data/creamlabel')</l>
+<c>*设置显示窗口参数</c>
+<l>dev_open_window_fit_image (ModelImage, 0, 0, -1, -1, WindowHandle)</l>
+<c>*创建局部形变模板，返回局部形变模板句柄ModelID</c>
+<l>create_local_deformable_model (ModelImage, 'auto', rad(-15), rad(30), 'auto', 1, 1, 'auto', 1, 1, 'auto', 'none', 'use_polarity', [40,60], 'auto', [], [], ModelID)</l>
+<c>*获取局部形变模板的轮廓</c>
+<l>get_deformable_model_contours (ModelContours, ModelID, 1)</l>
+<c>*为了将模板轮廓可视化显示，需要将轮廓与图像实物对应起来</c>
+<c>*因此出于可视化显示的目的，先获取模板图像的几何中心</c>
+<l>area_center (ModelImage, Area, Row, Column)</l>
+<c>*进行仿射变换</c>
+<l>hom_mat2d_identity (HomMat2DIdentity)</l>
+<l>hom_mat2d_translate (HomMat2DIdentity, Row, Column, HomMat2DTranslate)</l>
+<l>affine_trans_contour_xld (ModelContours, ContoursAffinTrans, HomMat2DTranslate)</l>
+<c>*设置轮廓显示的线条参数，显示模板图像与轮廓</c>
+<l>dev_set_line_width (2)</l>
+<l>dev_display (ModelImage)</l>
+<l>dev_display (ContoursAffinTrans)</l>
+<l>stop ()</l>
+<c>*读取测试图像，这里的图像中更包含模板图像，并且有一定的形变</c>
+<l>read_image (DeformedImage, 'data/cream')</l>
+<c>*显示用于测试的局部形变图像</c>
+<l>dev_resize_window_fit_image (DeformedImage, 0, 0, -1, -1)</l>
+<l>dev_display (DeformedImage)</l>
+<c>*进行局部形变模板匹配</c>
+<l>find_local_deformable_model (DeformedImage, ImageRectified, VectorField, DeformedContours, ModelID, rad(-14), rad(28), 0.9, 1, 0.9, 1, 0.78, 0, 0, 0, 0.7, ['image_rectified','vector_field','deformed_contours'], ['deformation_smoothness','expand_border','subpixel'], [18,0,0], Score, Row, Column)</l>
+<c>*显示形变轮廓</c>
+<l>dev_display (DeformedImage)</l>
+<l>dev_set_line_width (2)</l>
+<l>dev_set_color ('red')</l>
+<l>dev_display (DeformedContours)</l>
+<l>stop()</l>
+<c>*匹配结束，释放模板资源</c>
+<l>clear_deformable_model (ModelID)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

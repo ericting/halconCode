@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image, 'data/village')</l>
+<c>*对原图进行了均值处理，选用了“circle”类型的中值滤波器</c>
+<l>median_image (Image, ImageMedian, 'circle', 2, 'mirrored')</l>
+<c>*使用了区域生长算子寻找颜色相似的邻域</c>
+<l>regiongrowing (ImageMedian, Regions, 1, 1, 3, 500)</l>
+<c>*对图像进行粗略的区域分割，提取满足条件的各个独立区域</c>
+<l>shape_trans (Regions, Centers, 'inner_center')</l>
+<l>connection (Centers, SingleCenters)</l>
+<c>*对初步提取的区域计算出了中心点坐标</c>
+<l>area_center (SingleCenters, Area, Row, Column)</l>
+<c>*以均值灰度图像为输入，进行区域生长计算，计算的起始坐标为上一步的各区域中心</c>
+<l>regiongrowing_mean (ImageMedian, RegionsMean, Row, Column, 25, 100)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

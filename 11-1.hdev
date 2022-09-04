@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_close_window ()</l>
+<l>dev_open_window (0, 0, 599, 464, 'black', WindowID)</l>
+<c>*读取了一幅彩色图像</c>
+<l>read_image (Imagecolor, 'data/holesBoard')</l>
+<c>*将其转化为灰度图像</c>
+<l>rgb1_to_gray (Imagecolor, Image)</l>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_line_width(3)</l>
+<l>Row1 :=700</l>
+<l>Column1 := 950</l>
+<l>Row2 := 906</l>
+<l>Column2 := 1155</l>
+<c>*选择了一块矩形的ROI区域</c>
+<l>gen_rectangle1 (Rectangle, Row1, Column1, Row2, Column2)</l>
+<l>dev_display (Rectangle)</l>
+<c>*将ROI区域进行裁剪，变成模板图像</c>
+<l>reduce_domain (Image, Rectangle, ImageReduced)</l>
+<c>*创建模板，因为光照比较稳定，GrayValues选择‘original’</c>
+<l>create_template (ImageReduced, 5, 4, 'sort', 'original', TemplateID)	</l>
+<c>*读取测试图像</c>
+<l>read_image (ImageNoise, 'data/holesBoardNoise')</l>
+<c>*应用灰度模板并进行匹配</c>
+<l>adapt_template (ImageNoise, TemplateID)</l>
+<l>best_match_mg (ImageNoise, TemplateID, 35, 'false', 4, 'all', Row_, Column_, Error_)</l>
+<l>dev_clear_window ()</l>
+<l>dev_display (ImageNoise)</l>
+<c>*根据匹配返回的坐标中心，绘制矩形标识框，将匹配到的目标框选出来</c>
+<l>disp_rectangle2 (WindowID, Row_, Column_, 0, 95, 95)</l>
+<c>*匹配结束，释放模板资源</c>
+<l>clear_template (TemplateID)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

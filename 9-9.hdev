@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*读取输入图像</c>
+<l>read_image (Image, 'data/village')</l>
+<c>*获取原始图像的宽和高</c>
+<l>get_image_size (Image, Width, Height)</l>
+<c>*创建同尺寸的显示图像的窗口</c>
+<l>dev_open_window (0, 0, Width, Height, 'white', WindowID)</l>
+<c>*将图像转化为灰度图像</c>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<c>*使用均值滤波对灰度图像进行平滑，以去除细节杂点</c>
+<l>median_image (GrayImage, ImageMedian, 'circle', 2, 'mirrored')</l>
+<c>*进行阈值处理，提取出较亮部分</c>
+<l>threshold (ImageMedian, BrightRegion, 180, 255)</l>
+<c>*使用开运算使各区域分离</c>
+<l>opening_circle (BrightRegion, RegionClosing, 6.5)</l>
+<c>*将不相连通的区域分割开来</c>
+<l>connection (RegionClosing, BrightRestConnection)</l>
+<c>*将面积较大的区域提取出来</c>
+<l>select_shape (BrightRestConnection, SelectedRegions1, 'area', 'and', 5000, 99999)</l>
+<c>*获取这些区域的均值和偏差。由于湖面区域灰度值比较平滑，灰度偏差会比较小</c>
+<l>intensity (SelectedRegions1, ImageMedian, Mean, Deviation)</l>
+<c>*以灰度偏差为条件，选出符合条件的区域</c>
+<l>select_gray (SelectedRegions1, ImageMedian, SelectedRegions, 'deviation', 'and', 4, 10)</l>
+<l>dev_clear_window ()</l>
+<l>dev_display (GrayImage)</l>
+<l>dev_display (SelectedRegions)</l>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

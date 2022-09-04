@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (ImageNoise, 'data/marker.jpg')</l>
+<l>mean_image (ImageNoise, ImageMean, 9,9)</l>
+<l>dev_display(ImageMean)	</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

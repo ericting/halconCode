@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*关闭当前屏幕的窗口</c>
+<l>dev_close_window ()</l>
+<c>*读取图像，创建新窗口</c>
+<l>read_image (Image, 'data/cloth3')</l>
+<l>get_image_size (Image, Width, Height)</l>
+<l>dev_open_window (0, 0, Width/2, Height/2, 'black', WindowHandle)</l>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_line_width (3)</l>
+<l>dev_set_color ('red')</l>
+<c>*读取检测图像</c>
+<l>rgb1_to_gray (Image, ImageGray)</l>
+<c>*使用muti_image算子对灰度图像做了乘法运算</c>
+<c>*增强了图像的对比度</c>
+<l>mult_image(ImageGray, ImageGray, ImageResult,0.01, 0) </l>
+<c>*创建一个正弦形状的带通滤波器，用于消除背景的纹理图像。</c>
+<c>*其第二个参数决定了正弦的最大值，需要能在平滑背景的同时较好的提取出缺陷点</c>
+<l>gen_sin_bandpass (ImageBandpass, 0.2, 'none', 'rft', Width, Height)</l>
+<c>*对图像进行傅里叶变换，平滑以及还原</c>
+<l>rft_generic (ImageResult, ImageFFT, 'to_freq', 'none', 'complex', Width)</l>
+<l>convol_fft (ImageFFT, ImageBandpass, ImageConvol)</l>
+<l>rft_generic (ImageConvol, ImageFiltered, 'from_freq', 'n','byte', Width)</l>
+<c>*使用纹理滤波器提取缺陷部位</c>
+<l>texture_laws (ImageFiltered, ImageTexture, 'el',3, 5)</l>
+<c>*使用阈值处理等方式，根据灰度差异将缺陷部位选择出来</c>
+<l>threshold (ImageTexture, Imagelight, 150, 255)</l>
+<l>connection (Imagelight, ConnectedRegions)</l>
+<c>*根据形状的面积选择最大的区域</c>
+<l>select_shape_std (ConnectedRegions, SelectedRegion, 'max_area', 70)</l>
+<l>area_center (SelectedRegion, Area, Row, Column)</l>
+<l>gen_circle (Circle, Row, Column, 30)</l>
+<c>*显示缺陷检测结果</c>
+<l>dev_clear_window()</l>
+<l>dev_display(ImageGray)</l>
+<l>dev_display (Circle)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

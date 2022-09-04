@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image, 'data/flower') </l>
+<l>rgb1_to_gray (Image, GrayImage)</l>
+<l>dev_open_window (0, 512, 512, 512, 'black', WindowHandle1)</l>
+<c>*进行边缘检测</c>
+<l>lines_gauss(GrayImage,Lines,1.5,1,8,'light','true','bar-shaped','true')</l>
+<c>*在窗口将轮廓线条绘制出来</c>
+<l>dev_set_color ('red')</l>
+<l>dev_clear_window()</l>
+<l>dev_display (Lines)</l>
+<c></c>
+<c></c>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

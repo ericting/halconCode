@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<c>*读取参考的原始图像。如果是彩色的，需要先转化为单通道灰度图像</c>
+<l>read_image (Image, 'data/carmex-0')</l>
+<l>get_image_size (Image, Width, Height)</l>
+<l>dev_close_window ()</l>
+<l>dev_open_window (0, 0, Width, Height, 'black', WindowHandle)</l>
+<c>*设置窗口绘制参数，线宽设为3</c>
+<l>dev_set_line_width(3)</l>
+<l>dev_set_draw ('margin')</l>
+<c>*创建圆形，因为目标区域是圆形，因为用圆形将ROI区域选择出来</c>
+<l>gen_circle (Circle, 161, 208, 80)</l>
+<c>*获取圆形的中心点，为匹配后的可视化显示结果做准备</c>
+<l>area_center (Circle, Area, RowRef, ColumnRef)</l>
+<c>*裁剪ROI区域，得到模板图像</c>
+<l>reduce_domain (Image, Circle, ImageReduced)</l>
+<c>*创建基于相关性的匹配模型，输入模板图像和模型参数</c>
+<l>create_ncc_model (ImageReduced, 'auto', 0, 0, 'auto', 'use_polarity', ModelID)</l>
+<c>*显示原始图像和圆形框</c>
+<l>dev_display (Image)</l>
+<l>dev_display (Circle)</l>
+<l>stop ()</l>
+<c>*读取测试图像。该测试图像和参考图像比起来有轻微的位移，旋转，缩放，以及失焦</c>
+<l>read_image (Image2, 'data/carmex-1')</l>
+<c>*进行行基于相关性的模板匹配</c>
+<l>find_ncc_model (Image2, ModelID, 0, 0, 0.5, 1, 0.5, 'true', 0, Row, Column, Angle, Score)</l>
+<l>vector_angle_to_rigid (RowRef, ColumnRef, 0, Row, Column, 0, HomMat2D)</l>
+<c>*对圆形进行仿射变换，使其将匹配的结果目标标识出来</c>
+<l>affine_trans_region (Circle, RegionAffineTrans, HomMat2D, 'nearest_neighbor')</l>
+<c>*显示测试画面和圆形标记圈</c>
+<l>dev_display (Image2)</l>
+<l>dev_display (RegionAffineTrans)</l>
+<c>*匹配结束，释放模板资源</c>
+<l>clear_ncc_model (ModelID)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>

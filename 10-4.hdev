@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="12.0">
+<procedure name="main">
+<interface/>
+<body>
+<l>read_image (Image, 'data/flower')</l>
+<l>laplace (Image, ImageLaplace, 'signed', 11, 'n_8_isotropic')</l>
+<l>zero_crossing (ImageLaplace, RegionCrossing)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>
